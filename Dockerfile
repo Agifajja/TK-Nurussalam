@@ -9,14 +9,17 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
-    curl
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions (GD + ZIP + PDO)
+# ⛔ FIX MPM CONFLICT (PENTING)
+RUN a2dismod mpm_event || true \
+    && a2dismod mpm_worker || true \
+    && a2enmod mpm_prefork rewrite
+
+# Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd zip pdo pdo_mysql
-
-# Enable Apache rewrite
-RUN a2enmod rewrite
 
 # Set working directory
 WORKDIR /var/www/html
