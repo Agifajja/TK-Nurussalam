@@ -98,8 +98,8 @@ Route::middleware(['auth', 'role:Kepala Sekolah'])->group(function () {
     Route::get('/rekap', [RekapController::class, 'index'])
         ->name('rekap.index');
 
-    Route::get('/rekap/download/excel', [RekapController::class, 'download'])
-    ->name('rekap.download.excel');
+    Route::get('/rekap/download-excel', [RekapController::class, 'download'])
+        ->name('rekap.download.excel');
 
     Route::get('/rekap/download-pdf', [RekapController::class, 'downloadPdf'])
         ->name('rekap.download.pdf');
