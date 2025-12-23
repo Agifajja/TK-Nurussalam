@@ -1,0 +1,50 @@
+/* LOGIN PAGE */
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1e1e1e;
+}
+
+.login-card {
+    width: 750px;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+}
+
+/* KIRI */
+.login-left {
+    background: #2F5D46;
+}
+
+.login-left .logo {
+    width: 160px;
+}
+
+/* KANAN */
+.login-right {
+    padding: 50px;
+}
+
+/* INPUT */
+.input-custom {
+    background: #DDEECC;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 20px;
+}
+
+/* BUTTON */
+.btn-login {
+    background: #2F5D46;
+    color: #fff;
+    border-radius: 30px;
+    padding: 10px;
+}
+
+.btn-login:hover {
+    background: #244837;
+}
