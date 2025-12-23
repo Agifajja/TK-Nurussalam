@@ -92,23 +92,24 @@
             </tr>
         </thead>
 
-        <tbody>
-        @forelse ($siswas as $index => $siswa)
-            <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ $siswa->nis }}</td>
-                <td>{{ $siswa->nama_siswa }}</td>
-                <td>{{ $siswa->nama_ortu }}</td>
-                <td>{{ $siswa->kontak }}</td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="5" class="text-center text-muted">
-                    Belum ada siswa di kelas ini
-                </td>
-            </tr>
-        @endforelse
-        </tbody>
+       <tbody>
+@forelse ($siswas as $index => $siswa)
+    <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $siswa->nis }}</td>
+        <td>{{ $siswa->nama_siswa }}</td>
+        <td>{{ $siswa->nama_orang_tua }}</td>
+        <td>{{ $siswa->kontak_orang_tua }}</td>
+    </tr>
+@empty
+    <tr>
+        <td colspan="5" class="text-center text-muted">
+            Belum ada siswa di kelas ini
+        </td>
+    </tr>
+@endforelse
+</tbody>
+
     </table>
 </div>
 
