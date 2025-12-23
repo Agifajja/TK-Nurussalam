@@ -1,11 +1,6 @@
-FROM php:8.2-apache
+FROM php:8.2-cli
 
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
-    /etc/apache2/sites-available/*.conf \
-    /etc/apache2/apache2.conf
-
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -17,23 +12,23 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Laravel rewrite
-RUN a2enmod rewrite
-
-RUN a2dismod mpm_event mpm_worker || true \
-    && a2enmod mpm_prefork
-
+# PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd zip pdo pdo_mysql
 
-
 WORKDIR /var/www/html
+
+# Copy project
 COPY . .
 
+# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-RUN chown -R www-data:www-data storage bootstrap/cache
+# Permission
+RUN chmod -R 777 storage bootstrap/cache
 
 EXPOSE 80
-CMD ["apache2-foreground"]
+
+# 🚀 RUN LARAVEL DIRECTLY (NO APACHE, NO MPM)
+CMD php artisan serve --host=0.0.0.0 --port=80
