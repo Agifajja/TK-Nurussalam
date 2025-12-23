@@ -1,6 +1,17 @@
 FROM php:8.2-apache
 
-# Install system dependencies
+# =====================================================
+# Arahkan Apache langsung ke folder public Laravel
+# =====================================================
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
+    /etc/apache2/sites-available/*.conf \
+    /etc/apache2/apache2.conf
+
+# =====================================================
+# Install dependency sistem
+# =====================================================
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -12,34 +23,40 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# 🔥 FORCE FIX: HAPUS SEMUA MPM
-RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
-          /etc/apache2/mods-enabled/mpm_worker.load \
-          /etc/apache2/mods-enabled/mpm_event.conf \
-          /etc/apache2/mods-enabled/mpm_worker.conf \
-    && ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load \
-    && ln -sf /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf \
-    && a2enmod rewrite
+# =====================================================
+# Apache config (Laravel perlu rewrite)
+# =====================================================
+RUN a2enmod rewrite
 
-# Install PHP extensions
+# =====================================================
+# PHP extensions
+# =====================================================
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd zip pdo pdo_mysql
 
-# Set working directory
+# =====================================================
+# Working directory
+# =====================================================
 WORKDIR /var/www/html
 
-# Copy project files
+# =====================================================
+# Copy project
+# =====================================================
 COPY . .
 
-# Install Composer
+# =====================================================
+# Composer
+# =====================================================
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Fix permissions
+# =====================================================
+# Permission Laravel
+# =====================================================
 RUN chown -R www-data:www-data storage bootstrap/cache
 
+# =====================================================
+# Port & Start
+# =====================================================
 EXPOSE 80
-
 CMD ["apache2-foreground"]
